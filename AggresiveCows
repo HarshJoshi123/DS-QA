@@ -1,0 +1,78 @@
+----Aggressive cows-----
+Farmer John has built a new long barn, with N stalls. The stalls are located along a straight line at positions x1,...,xN
+
+His C cows don't like this barn layout and become aggressive towards each other once put into a stall. To prevent the cows from hurting each other, John wants to assign the cows to the stalls, such that the minimum distance between any two of them is as large as possible. What is the largest minimum distance?
+
+Input:-
+
+T– the number of test cases, then t test cases follows. 
+Line 1: Two space-separated integers: N and C
+Lines 2..N+1: Line i+1 contains an integer stall location, xi. These are not necessarily in sorted order.
+
+Solution-
+1.) Sort the array
+2.By default we select last 2. if only 2 cows are there, return first and last stall location difference
+3.)else, find max range of distance by sb last and first stall location diff
+4.)apply binary search between 1 and max and find which satisfies distance between each stall >= diff
+5.)[NOTE] Count will always be k-2 as first and last are selected and also consider distance from last index (as well as previously selected one)
+
+#include <iostream>
+#include <bits/stdc++.h>
+using namespace std;
+bool findMinDist(vector<int>& nums,int dist,int k ){
+    int count = k-2;
+    int currIndex = 0;
+
+     for(int i=1;i<nums.size()-1;i++){
+        if(nums[i]-nums[currIndex]>=dist && nums[nums.size()-1]-nums[i]>=dist){
+           count--;
+           currIndex = i;
+        }
+     }
+	
+     if(count<=0){
+      return true;
+     }
+     return false;
+
+   } 
+
+int main() {
+	int num;
+	cin >> num;    //Reading input from STDIN
+	while(num--){
+int n,k;
+	cin>>n>>k;
+	vector<int> nums(n);
+	for(int i=0;i<n;i++){
+         cin>>nums[i];
+	}
+    if(k==2){
+
+		return nums[n-1]-nums[0];
+	}
+     sort(nums.begin(),nums.end());
+        int min = 1;
+        int max = nums[n-1]-nums[0];
+        
+        int l = 1;
+        int u = max;
+        int ans = 1;
+        while(l<=u){
+             int mid = (l+u)/2;
+			
+             if(findMinDist(nums,mid,k)){
+               ans = ans > mid ? ans : mid;
+               l = mid+1;
+             }
+			 else{
+				u = mid-1;
+			 }
+             
+        }
+		cout<<ans<<"\n";
+	}
+	
+		return 0;
+
+}
